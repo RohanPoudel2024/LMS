@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,11 +14,47 @@ datasource db {
 }
 
 model Book {
-  id            Int      @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   title         String
   author        String
   publishedYear Int
-  available     Boolean  @default(true)
-  createdAt     DateTime @default(now())
+  available     Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  userId        Int           
+  User          User          @relation(fields: [userId], references: [id])
+  Transaction   Transaction[]
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  books     Book[]
+  members   Member[]
+}
+
+model Member {
+  id          Int      @id @unique @default(autoincrement())
+  name        String
+  email       String   @unique
+  createdAt   DateTime @default(now())
+  
+  librarianId Int
+  librarian   User          @relation(fields: [librarianId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         Int       @id @unique @default(autoincrement())
+  issueDate  DateTime  @default(now())
+  memberId   Int
+  bookId     Int
+  returnDate DateTime?
+  returned   Boolean   @default(false)
+
+  member Member @relation(fields: [memberId], references: [id])
+  book   Book   @relation(fields: [bookId], references: [id])
+}
