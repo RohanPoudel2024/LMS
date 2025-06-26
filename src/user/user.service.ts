@@ -8,6 +8,19 @@ export class UserService {
     constructor(private prisma:PrismaService){}
 
     async createUser(data:UserCreateDto){
+
+        const existingUser = await this.prisma.user.findUnique({
+            where:{
+                email:data.email,
+            }
+        });
+
+        if(existingUser){
+            return {
+                message:"user already exists",
+                statusCode:400
+            }
+        }
         const hashed =  await bcrypt.hash(data.password, 10);
         try{
             const user = await this.prisma.user.create({
@@ -23,7 +36,7 @@ export class UserService {
                 }
             });
             return {
-                messagge:"book created successpully",
+                messagge:"user created successpully",
                 data:user
                 
             }
