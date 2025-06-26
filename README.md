@@ -1,16 +1,16 @@
-# Library Management System (BMS)
+# Library Management System (LMS)
 
-A comprehensive Book Management System built with NestJS, Prisma, and PostgreSQL. This system allows librarians to manage books, members, and book transactions efficiently.
+A comprehensive Library Management System built with NestJS, Prisma, and PostgreSQL. This system allows librarians to manage books, members, and book transactions efficiently.
 
 ## Features
 
-- **Authentication & Authorization** - JWT-based authentication system
-- **Book Management** - Add, view, and manage books
-- **Member Management** - Register and manage library members
-- **Transaction Management** - Track book issues and returns
-- **Role-based Access** - Librarian-specific access controls
-- **Data Validation** - Input validation using class-validator
-- **Database** - PostgreSQL with Prisma ORM
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg> **Authentication & Authorization** - JWT-based authentication system
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> **Book Management** - Add, view, and manage books
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> **Member Management** - Register and manage library members with per-librarian uniqueness
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h2m4-6a4 4 0 1 1 8 0v6a2 2 0 0 1-2 2h-5"/><path d="M9 11V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg> **Transaction Management** - Track book issues and returns with auto return dates
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg> **Role-based Access** - Librarian-specific access controls
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg> **Data Validation** - Input validation using class-validator
+- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M8 8h8v8H8z"/></svg> **Database** - PostgreSQL with Prisma ORM
 
 ## Tech Stack
 
@@ -37,10 +37,12 @@ A comprehensive Book Management System built with NestJS, Prisma, and PostgreSQL
 - id, name, email, createdAt, librarianId
 - Belongs to: User (librarian)
 - Has many: transactions
+- **Email uniqueness**: Per-librarian (same email can exist across different librarians)
 
 ### Transaction
 - id, issueDate, memberId, bookId, returnDate, returned
 - Belongs to: Member, Book
+- **Auto return date**: 14 days from issue date (configurable)
 
 ## Prerequisites
 
@@ -91,6 +93,29 @@ npm run start:prod
 
 The server will start on `http://localhost:3000`
 
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg> Key Business Rules
+
+### Member Management
+- **Per-Librarian Uniqueness**: Each librarian can have unique member emails in their list
+- **Cross-Librarian Flexibility**: Same email can be registered across different librarians
+- **Example**: Librarian A and Librarian B can both have a member with email "john@example.com"
+
+### User (Librarian) Management
+- **Global Email Uniqueness**: Librarian emails must be unique across the entire system
+- **Secure Authentication**: Passwords are hashed using bcrypt
+- **JWT-based Sessions**: Authentication tokens for secure API access
+
+### Transaction Management
+- **Auto Return Date**: Books automatically get a return date of 14 days from issue
+- **Borrowing Limit**: Each member can borrow up to 5 books simultaneously
+- **Real-time Tracking**: Dynamic calculation of remaining days until return
+- **Validation**: Ensures book and member belong to the same librarian
+
+### Book Management
+- **Librarian-Specific**: Each librarian manages their own book inventory
+- **Availability Tracking**: Books can be marked as available/unavailable
+- **Comprehensive Details**: Title, author, publication year tracking
+
 ## API Documentation
 
 ### Base URL
@@ -106,7 +131,7 @@ Authorization: Bearer <your-jwt-token>
 
 ---
 
-## Authentication Endpoints
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg> Authentication Endpoints
 
 ### POST /auth/login
 Login with email and password to get JWT token.
@@ -135,7 +160,15 @@ Login with email and password to get JWT token.
 }
 ```
 
-**Error Response:**
+**Error Responses:**
+```json
+{
+  "success": false,
+  "message": "User not registered. Please sign up first.",
+  "statusCode": 401
+}
+```
+
 ```json
 {
   "success": false,
@@ -156,10 +189,10 @@ curl -X POST http://localhost:3000/auth/login \
 
 ---
 
-## 👥 User Management Endpoints
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> User Management Endpoints
 
 ### POST /user/adduser
-Register a new librarian user.
+Register a new librarian user. **Note**: Email must be globally unique for librarians.
 
 **Request Body:**
 ```json
@@ -170,15 +203,26 @@ Register a new librarian user.
 }
 ```
 
-**Response:**
+**Success Response:**
 ```json
 {
-  "message": "book created successfully",
+  "success": true,
+  "message": "User created successfully",
+  "statusCode": 201,
   "data": {
     "name": "Jane Smith",
     "email": "jane@library.com",
     "password": "$2b$10$..."
   }
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "message": "Email already exists",
+  "statusCode": 400
 }
 ```
 
@@ -214,7 +258,7 @@ curl -X GET http://localhost:3000/user
 
 ---
 
-## 📚 Book Management Endpoints
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Book Management Endpoints
 **(Authentication Required)**
 
 ### POST /book/addBook
@@ -292,11 +336,11 @@ curl -X GET http://localhost:3000/book \
 
 ---
 
-## Member Management Endpoints
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Member Management Endpoints
 **(Authentication Required)**
 
 ### POST /member/addMember
-Add a new library member.
+Add a new library member. **Note**: Email must be unique per librarian, but same email can exist across different librarians.
 
 **Headers:**
 ```
@@ -311,10 +355,12 @@ Authorization: Bearer <your-jwt-token>
 }
 ```
 
-**Response:**
+**Success Response:**
 ```json
 {
-  "message": "member created successfully",
+  "success": true,
+  "message": "Member created successfully",
+  "statusCode": 201,
   "data": {
     "id": 1,
     "name": "Alice Johnson",
@@ -322,6 +368,15 @@ Authorization: Bearer <your-jwt-token>
     "librarianId": 1,
     "createdAt": "2025-06-26T10:00:00.000Z"
   }
+}
+```
+
+**Error Response:**
+```json
+{
+  "statusCode": 400,
+  "message": "Member with email alice@email.com already exists in your member list",
+  "error": "Bad Request"
 }
 ```
 
@@ -386,18 +441,18 @@ curl -X DELETE http://localhost:3000/member/1 \
 
 ---
 
-## 📋 Transaction Management Endpoints
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h2m4-6a4 4 0 1 1 8 0v6a2 2 0 0 1-2 2h-5"/><path d="M9 11V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg> Transaction Management Endpoints
 **(Authentication Required)**
 
 ### POST /transaction/add
-Create a new book issue transaction.
+Create a new book issue transaction. **Auto Return Date**: If no return date is provided, it will be automatically set to 14 days from issue date.
 
 **Headers:**
 ```
 Authorization: Bearer <your-jwt-token>
 ```
 
-**Request Body:**
+**Request Body (with custom return date):**
 ```json
 {
   "memberId": 1,
@@ -407,15 +462,56 @@ Authorization: Bearer <your-jwt-token>
 }
 ```
 
-**Response:**
+**Request Body (auto return date):**
+```json
+{
+  "memberId": 1,
+  "bookId": 1
+}
+```
+
+**Success Response:**
 ```json
 {
   "success": true,
   "message": "Transaction created successfully",
+  "statusCode": 201,
   "data": {
     "id": 1,
     "memberId": 1,
     "bookId": 1,
+    "issueDate": "2025-06-26T10:00:00.000Z",
+    "returnDate": "2025-07-10T10:00:00.000Z",
+    "returned": false,
+    "remainingDays": 14,
+    "member": {
+      "name": "Alice Johnson",
+      "email": "alice@email.com"
+    },
+    "book": {
+      "title": "Sample Book",
+      "author": "Sample Author"
+    }
+  }
+}
+```
+
+**Error Responses:**
+```json
+{
+  "success": false,
+  "message": "Member has already borrowed 5 books",
+  "statusCode": 400
+}
+```
+
+```json
+{
+  "success": false,
+  "message": "Book not found",
+  "statusCode": 404
+}
+```
     "issueDate": "2025-06-26T10:00:00.000Z",
     "returnDate": "2025-07-26T10:00:00.000Z",
     "returned": false
@@ -477,31 +573,95 @@ Delete a transaction.
 
 ---
 
-## Testing the API
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg> Testing the API
 
 ### 1. Using cURL
 
-**Complete workflow example:**
+**Complete workflow example demonstrating per-librarian member uniqueness:**
 
 ```bash
-# 1. Register a new librarian
+# 1. Register first librarian
 curl -X POST http://localhost:3000/user/adduser \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Test Librarian",
-    "email": "test@library.com",
+    "name": "Librarian A",
+    "email": "librarianA@library.com",
     "password": "password123"
   }'
 
-# 2. Login to get JWT token
+# 2. Register second librarian
+curl -X POST http://localhost:3000/user/adduser \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Librarian B", 
+    "email": "librarianB@library.com",
+    "password": "password123"
+  }'
+
+# 3. Login as Librarian A
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "test@library.com",
+    "email": "librarianA@library.com",
     "password": "password123"
   }'
+# Save the token as LIBRARIAN_A_TOKEN
 
-# 3. Add a book (replace YOUR_JWT_TOKEN with actual token)
+# 4. Login as Librarian B  
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "librarianB@library.com",
+    "password": "password123"
+  }'
+# Save the token as LIBRARIAN_B_TOKEN
+
+# 5. Librarian A adds a book
+curl -X POST http://localhost:3000/book/addBook \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer LIBRARIAN_A_TOKEN" \
+  -d '{
+    "title": "1984",
+    "author": "George Orwell",
+    "publishedYear": 1949,
+    "available": true
+  }'
+
+# 6. Librarian A adds a member
+curl -X POST http://localhost:3000/member/addMember \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer LIBRARIAN_A_TOKEN" \
+  -d '{
+    "name": "John Reader",
+    "email": "john@example.com"
+  }'
+
+# 7. Librarian B adds the SAME member (different librarian, allowed)
+curl -X POST http://localhost:3000/member/addMember \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer LIBRARIAN_B_TOKEN" \
+  -d '{
+    "name": "John Reader",
+    "email": "john@example.com"
+  }'
+
+# 8. Librarian A tries to add the same member again (should fail)
+curl -X POST http://localhost:3000/member/addMember \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer LIBRARIAN_A_TOKEN" \
+  -d '{
+    "name": "John Smith",
+    "email": "john@example.com"
+  }'
+
+# 9. Create transaction with auto return date (14 days)
+curl -X POST http://localhost:3000/transaction/add \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer LIBRARIAN_A_TOKEN" \
+  -d '{
+    "memberId": 1,
+    "bookId": 1
+  }'
 curl -X POST http://localhost:3000/book/addBook \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
@@ -605,6 +765,27 @@ npx prisma studio         # Open Prisma Studio
 npm run lint              # Run ESLint
 npm run format            # Format code with Prettier
 ```
+
+---
+
+## <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Unique Features
+
+### <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Per-Librarian Member Uniqueness
+- **Flexible Member Management**: Same person can register with multiple librarians
+- **Scoped Validation**: Email uniqueness enforced per librarian, not globally
+- **Real-world Application**: Supports libraries with multiple branches/librarians
+
+### <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg> Smart Transaction Management
+- **Auto Return Dates**: 14-day automatic return period calculation
+- **Dynamic Remaining Days**: Real-time calculation of days until due
+- **Borrowing Limits**: 5-book limit per member with validation
+- **Overdue Detection**: Built-in support for overdue transaction tracking
+
+### <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg> Enhanced Error Handling
+- **Proper HTTP Status Codes**: Accurate status codes for all responses
+- **Detailed Error Messages**: Clear, actionable error descriptions
+- **NestJS Exception Handling**: Built-in BadRequest and Internal Server exceptions
+- **Consistent Response Format**: Standardized success/error response structure
 
 ## Project Structure
 
