@@ -10,7 +10,7 @@ export class UserController {
     addUser(@Body() rules:UserCreateDto){
         return this.userService.createUser(rules);
     }
-
+    
     @Get()
     findAllUsers(){
         return this.userService.findAllUsers()
