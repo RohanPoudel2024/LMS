@@ -50,6 +50,9 @@ export class TransactionService {
           statusCode:404
         }
       }
+
+
+
       
       const transactionCount = await this.prisma.transaction.count({
         where:{
@@ -67,13 +70,32 @@ export class TransactionService {
         }
       }
 
+      const autoReturnDate = new Date();
+      autoReturnDate.setDate(autoReturnDate.getDate()+14);
+
 
       const transaction = await this.prisma.transaction.create({
         data:{
           memberId:create.memberId,
           bookId:create.bookId,
-          returnDate:create.returnDate,
+          returnDate:autoReturnDate,
           returned:create.returned,
+        },
+        include:{
+          member:{
+            select:{
+              id:true,
+              name:true,
+              email:true
+            }
+          },
+          book:{
+            select:{
+              id:true,
+              title:true,
+              author:true,
+            }
+          }
         }
       });
       return {
