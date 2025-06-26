@@ -419,17 +419,6 @@ curl -X GET http://localhost:3000/member/1 \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-### PATCH /member/:id
-Update member information.
-
-**Request Body:**
-```json
-{
-  "name": "Alice Smith",
-  "email": "alice.smith@email.com"
-}
-```
-
 ### DELETE /member/:id
 Delete a member.
 
@@ -556,17 +545,6 @@ Authorization: Bearer <your-jwt-token>
 
 ### GET /transaction/:id
 Get a specific transaction by ID.
-
-### PATCH /transaction/:id
-Update transaction (e.g., mark as returned).
-
-**Request Body:**
-```json
-{
-  "returned": true,
-  "returnDate": "2025-06-26T15:00:00.000Z"
-}
-```
 
 ### DELETE /transaction/:id
 Delete a transaction.
