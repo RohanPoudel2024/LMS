@@ -34,7 +34,8 @@ export class MemberController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.memberService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: AuthRequest) {
+    const librarianId = req.user.userId;
+    return this.memberService.remove(+id, librarianId);
   }
 }
