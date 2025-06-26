@@ -1,4 +1,4 @@
-# Book Management System (BMS)
+# Library Management System (BMS)
 
 A comprehensive Book Management System built with NestJS, Prisma, and PostgreSQL. This system allows librarians to manage books, members, and book transactions efficiently.
 
@@ -52,7 +52,7 @@ A comprehensive Book Management System built with NestJS, Prisma, and PostgreSQL
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/RohanPoudel2024/LMS.git
 cd bms
 ```
 
