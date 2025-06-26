@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMS API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #fafafa;
+            color: #3b4151;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #89bf04 0%, #52c41a 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .auth-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f0f0f0;
+        }
+
+        .auth-status.authenticated {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+        }
+
+        .auth-status.unauthenticated {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+        }
+
+        .section {
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(90deg, #1890ff 0%, #36cfc9 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .endpoint {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 0;
+        }
+
+        .endpoint:last-child {
+            border-bottom: none;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .endpoint-header:hover {
+            background-color: #f5f5f5;
+        }
+
+        .method {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-right: 15px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .method.post {
+            background: #49cc90;
+            color: white;
+        }
+
+        .method.get {
+            background: #61affe;
+            color: white;
+        }
+
+        .method.put {
+            background: #fca130;
+            color: white;
+        }
+
+        .method.delete {
+            background: #f93e3e;
+            color: white;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .endpoint-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .endpoint-body {
+            padding: 20px;
+            background: #fafafa;
+            display: none;
+        }
+
+        .endpoint-body.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #40a9ff;
+        }
+
+        .btn-success {
+            background: #52c41a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #73d13d;
+        }
+
+        .btn-warning {
+            background: #faad14;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #ffc53d;
+        }
+
+        .response-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .response-section h4 {
+            margin-bottom: 10px;
+            color: #262626;
+        }
+
+        .response-content {
+            background: #001529;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .status-code {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .status-200 { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
+        .status-201 { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
+        .status-400 { background: #fff2f0; color: #ff4d4f; border: 1px solid #ffccc7; }
+        .status-401 { background: #fff2f0; color: #ff4d4f; border: 1px solid #ffccc7; }
+        .status-500 { background: #fff2f0; color: #ff4d4f; border: 1px solid #ffccc7; }
+
+        .token-display {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            margin-top: 10px;
+        }
+
+        .curl-section {
+            background: #f5f5f5;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .curl-section h4 {
+            margin-bottom: 10px;
+            color: #262626;
+        }
+
+        .curl-command {
+            background: #001529;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .example-section {
+            background: #f9f9f9;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .example-section h4 {
+            margin-bottom: 10px;
+            color: #262626;
+        }
+
+        .lock-icon {
+            color: #faad14;
+            margin-left: 10px;
+        }
+
+        .base-url {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .base-url code {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1890ff;
+        }
+
+        .workflow-section {
+            background: #fff7e6;
+            border: 1px solid #ffd591;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .workflow-section h3 {
+            color: #d46b08;
+            margin-bottom: 15px;
+        }
+
+        .workflow-steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .workflow-steps li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .workflow-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #fa8c16;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* New styles for network IP detection */
+        .ip-detection {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 4px;
+        }
+
+        .ip-detection h4 {
+            margin-bottom: 10px;
+            color: #262626;
+        }
+
+        .ip-detection code {
+            font-weight: 600;
+            color: #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 BMS API Documentation</h1>
+            <p>Multi-tenant Library Management System with JWT Authentication</p>
+            <p><strong>Version:</strong> 1.0 | <strong>Base URL:</strong> http://localhost:3000</p>
+        </div>
+
+        <div class="base-url">
+            <strong>Base URL:</strong> <code id="baseUrl">http://192.168.1.100:3000</code>
+        </div>
+
+        <div class="workflow-section">
+            <h3>🚀 Quick Start Workflow</h3>
+            <ol class="workflow-steps">
+                <li>Register a new user (librarian) using <code>/user/adduser</code></li>
+                <li>Login with credentials using <code>/auth/login</code></li>
+                <li>Copy the <code>accessToken</code> from login response</li>
+                <li>Use the token in Authorization header for protected routes</li>
+                <li>Test book management, member management, and transactions</li>
+            </ol>
+        </div>
+
+        <div class="auth-section">
+            <h3>🔐 Authentication Status</h3>
+            <div id="authStatus" class="auth-status unauthenticated">
+                <span>🔒</span>
+                <span>Not authenticated - Please login to test protected routes</span>
+            </div>
+            <div id="tokenDisplay" class="token-display" style="display: none;">
+                <strong>Current Token:</strong>
+                <div id="tokenValue"></div>
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <div class="section">
+            <div class="section-header">🔐 Authentication</div>
+            
+            <!-- Register User -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('register')">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/user/adduser</span>
+                    <span class="endpoint-description">Register a new librarian user</span>
+                </div>
+                <div id="register" class="endpoint-body">
+                    <div class="example-section">
+                        <h4>📝 Request Body Example:</h4>
+                        <pre>{
+  "name": "John Librarian",
+  "email": "john@library.com",
+  "password": "password123"
+}</pre>
+                    </div>
+                    <div class="form-group">
+                        <label>Request Body (JSON):</label>
+                        <textarea id="registerBody">{
+  "name": "John Librarian",
+  "email": "john@library.com",
+  "password": "password123"
+}</textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="testRegister()">Try It Out</button>
+                    <div id="registerResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="registerResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X POST http://localhost:3000/user/adduser \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Librarian",
+    "email": "john@library.com",
+    "password": "password123"
+  }'</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('login')">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/auth/login</span>
+                    <span class="endpoint-description">Login and get JWT token</span>
+                </div>
+                <div id="login" class="endpoint-body">
+                    <div class="example-section">
+                        <h4>📝 Request Body Example:</h4>
+                        <pre>{
+  "email": "john@library.com",
+  "password": "password123"
+}</pre>
+                    </div>
+                    <div class="form-group">
+                        <label>Request Body (JSON):</label>
+                        <textarea id="loginBody">{
+  "email": "john@library.com",
+  "password": "password123"
+}</textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="testLogin()">Try It Out</button>
+                    <div id="loginResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="loginResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@library.com",
+    "password": "password123"
+  }'</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Section -->
+        <div class="section">
+            <div class="section-header">📚 Books Management</div>
+            
+            <!-- Add Book -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('addBook')">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/book/addBook</span>
+                    <span class="endpoint-description">Add a new book to library</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div id="addBook" class="endpoint-body">
+                    <div class="example-section">
+                        <h4>📝 Request Body Example:</h4>
+                        <pre>{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "publishedYear": 1925,
+  "available": true
+}</pre>
+                    </div>
+                    <div class="form-group">
+                        <label>Request Body (JSON):</label>
+                        <textarea id="addBookBody">{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "publishedYear": 1925,
+  "available": true
+}</textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="testAddBook()">Try It Out</button>
+                    <div id="addBookResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="addBookResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X POST http://localhost:3000/book/addBook \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -d '{
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "publishedYear": 1925,
+    "available": true
+  }'</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Get Books -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('getBooks')">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/book</span>
+                    <span class="endpoint-description">Get all books for authenticated librarian</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div id="getBooks" class="endpoint-body">
+                    <p><strong>No request body required.</strong> This endpoint returns all books belonging to the authenticated librarian.</p>
+                    <button class="btn btn-primary" onclick="testGetBooks()">Try It Out</button>
+                    <div id="getBooksResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="getBooksResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X GET http://localhost:3000/book \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Members Section -->
+        <div class="section">
+            <div class="section-header">👥 Members Management</div>
+            
+            <!-- Add Member -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('addMember')">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/member/addMember</span>
+                    <span class="endpoint-description">Add a new member to library</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div id="addMember" class="endpoint-body">
+                    <div class="example-section">
+                        <h4>📝 Request Body Example:</h4>
+                        <pre>{
+  "name": "Alice Reader",
+  "email": "alice@reader.com"
+}</pre>
+                    </div>
+                    <div class="form-group">
+                        <label>Request Body (JSON):</label>
+                        <textarea id="addMemberBody">{
+  "name": "Alice Reader",
+  "email": "alice@reader.com"
+}</textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="testAddMember()">Try It Out</button>
+                    <div id="addMemberResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="addMemberResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X POST http://localhost:3000/member/addMember \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -d '{
+    "name": "Alice Reader",
+    "email": "alice@reader.com"
+  }'</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Get Members -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('getMembers')">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/member</span>
+                    <span class="endpoint-description">Get all members for authenticated librarian</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div id="getMembers" class="endpoint-body">
+                    <p><strong>No request body required.</strong> This endpoint returns all members belonging to the authenticated librarian.</p>
+                    <button class="btn btn-primary" onclick="testGetMembers()">Try It Out</button>
+                    <div id="getMembersResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="getMembersResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X GET http://localhost:3000/member \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="section">
+            <div class="section-header">📖 Transactions Management</div>
+            
+            <!-- Add Transaction -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('addTransaction')">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/transaction/add</span>
+                    <span class="endpoint-description">Create a new book lending transaction</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div id="addTransaction" class="endpoint-body">
+                    <div class="example-section">
+                        <h4>📝 Request Body Example:</h4>
+                        <pre>{
+  "memberId": 1,
+  "bookId": 1,
+  "returnDate": "2025-07-25T16:31:05.000Z",
+  "returned": false
+}</pre>
+                    </div>
+                    <div class="form-group">
+                        <label>Request Body (JSON):</label>
+                        <textarea id="addTransactionBody">{
+  "memberId": 1,
+  "bookId": 1,
+  "returnDate": "2025-07-25T16:31:05.000Z",
+  "returned": false
+}</textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="testAddTransaction()">Try It Out</button>
+                    <div id="addTransactionResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="addTransactionResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X POST http://localhost:3000/transaction/add \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -d '{
+    "memberId": 1,
+    "bookId": 1,
+    "returnDate": "2025-07-25T16:31:05.000Z",
+    "returned": false
+  }'</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Get Transactions -->
+            <div class="endpoint">
+                <div class="endpoint-header" onclick="toggleEndpoint('getTransactions')">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/transaction</span>
+                    <span class="endpoint-description">Get all transactions for authenticated librarian</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div id="getTransactions" class="endpoint-body">
+                    <p><strong>No request body required.</strong> This endpoint returns all transactions for books belonging to the authenticated librarian.</p>
+                    <button class="btn btn-primary" onclick="testGetTransactions()">Try It Out</button>
+                    <div id="getTransactionsResponse" class="response-section" style="display: none;">
+                        <h4>Response:</h4>
+                        <div id="getTransactionsResponseContent" class="response-content"></div>
+                    </div>
+                    <div class="curl-section">
+                        <h4>📋 cURL Command:</h4>
+                        <div class="curl-command">curl -X GET http://localhost:3000/transaction \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing Utilities -->
+        <div class="section">
+            <div class="section-header">🧪 Testing Utilities</div>
+            <div style="padding: 20px;">
+                <h3>Quick Actions</h3>
+                <button class="btn btn-warning" onclick="runFullTest()">🚀 Run Complete Test Flow</button>
+                <button class="btn btn-primary" onclick="clearAllResponses()">🧹 Clear All Responses</button>
+                <button class="btn btn-success" onclick="testMultiTenant()">👥 Test Multi-Tenant Isolation</button>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Change Base URL:</h4>
+                    <input type="text" id="baseUrlInput" value="http://localhost:3000" style="width: 300px; margin-right: 10px;">
+                    <button class="btn btn-primary" onclick="updateBaseUrl()">Update</button>
+                </div>
+            </div>
+
+            <!-- New IP Detection Section -->
+            <div class="ip-detection">
+                <h4>🌐 Network IP Detection</h4>
+                <p>Your current page is loaded from: <code id="currentHost"></code></p>
+                <button class="btn btn-primary" onclick="detectNetworkIP()">🔍 Detect Network IP</button>
+                <div id="ipSuggestions" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = '';
+        let baseUrl = 'http://192.168.1.69:3000'; // Your actual network IP
+
+        function toggleEndpoint(id) {
+            const body = document.getElementById(id);
+            body.classList.toggle('active');
+        }
+
+        function updateAuthStatus(token) {
+            const authStatus = document.getElementById('authStatus');
+            const tokenDisplay = document.getElementById('tokenDisplay');
+            const tokenValue = document.getElementById('tokenValue');
+
+            if (token) {
+                currentToken = token;
+                authStatus.className = 'auth-status authenticated';
+                authStatus.innerHTML = '<span>✅</span><span>Authenticated - Ready to test protected routes</span>';
+                tokenDisplay.style.display = 'block';
+                tokenValue.textContent = token.substring(0, 50) + '...';
+            } else {
+                currentToken = '';
+                authStatus.className = 'auth-status unauthenticated';
+                authStatus.innerHTML = '<span>🔒</span><span>Not authenticated - Please login to test protected routes</span>';
+                tokenDisplay.style.display = 'none';
+            }
+        }
+
+        function showResponse(elementId, response, status) {
+            const responseElement = document.getElementById(elementId);
+            const contentElement = document.getElementById(elementId + 'Content');
+            
+            responseElement.style.display = 'block';
+            contentElement.innerHTML = `<span class="status-code status-${status}">Status: ${status}</span>\n\n${JSON.stringify(response, null, 2)}`;
+        }
+
+        async function makeRequest(url, method, body = null, useAuth = false) {
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            if (useAuth && currentToken) {
+                headers['Authorization'] = `Bearer ${currentToken}`;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers,
+                    body: body ? JSON.stringify(body) : null
+                });
+
+                const data = await response.json();
+                return { data, status: response.status };
+            } catch (error) {
+                return { 
+                    data: { error: error.message }, 
+                    status: 500 
+                };
+            }
+        }
+
+        async function testRegister() {
+            const body = JSON.parse(document.getElementById('registerBody').value);
+            const result = await makeRequest(`${baseUrl}/user/adduser`, 'POST', body);
+            showResponse('registerResponse', result.data, result.status);
+        }
+
+        async function testLogin() {
+            const body = JSON.parse(document.getElementById('loginBody').value);
+            const result = await makeRequest(`${baseUrl}/auth/login`, 'POST', body);
+            showResponse('loginResponse', result.data, result.status);
+            
+            if (result.data.accessToken) {
+                updateAuthStatus(result.data.accessToken);
+            }
+        }
+
+        async function testAddBook() {
+            if (!currentToken) {
+                alert('Please login first to get an access token!');
+                return;
+            }
+
+            const body = JSON.parse(document.getElementById('addBookBody').value);
+            const result = await makeRequest(`${baseUrl}/book/addBook`, 'POST', body, true);
+            showResponse('addBookResponse', result.data, result.status);
+        }
+
+        async function testGetBooks() {
+            if (!currentToken) {
+                alert('Please login first to get an access token!');
+                return;
+            }
+
+            const result = await makeRequest(`${baseUrl}/book`, 'GET', null, true);
+            showResponse('getBooksResponse', result.data, result.status);
+        }
+
+        async function testAddMember() {
+            if (!currentToken) {
+                alert('Please login first to get an access token!');
+                return;
+            }
+
+            const body = JSON.parse(document.getElementById('addMemberBody').value);
+            const result = await makeRequest(`${baseUrl}/member/addMember`, 'POST', body, true);
+            showResponse('addMemberResponse', result.data, result.status);
+        }
+
+        async function testGetMembers() {
+            if (!currentToken) {
+                alert('Please login first to get an access token!');
+                return;
+            }
+
+            const result = await makeRequest(`${baseUrl}/member`, 'GET', null, true);
+            showResponse('getMembersResponse', result.data, result.status);
+        }
+
+        async function testAddTransaction() {
+            if (!currentToken) {
+                alert('Please login first to get an access token!');
+                return;
+            }
+
+            const body = JSON.parse(document.getElementById('addTransactionBody').value);
+            const result = await makeRequest(`${baseUrl}/transaction/add`, 'POST', body, true);
+            showResponse('addTransactionResponse', result.data, result.status);
+        }
+
+        async function testGetTransactions() {
+            if (!currentToken) {
+                alert('Please login first to get an access token!');
+                return;
+            }
+
+            const result = await makeRequest(`${baseUrl}/transaction`, 'GET', null, true);
+            showResponse('getTransactionsResponse', result.data, result.status);
+        }
+
+        async function runFullTest() {
+            alert('Running complete test flow... Check the responses in each section!');
+            
+            // Register
+            await testRegister();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Login
+            await testLogin();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            if (currentToken) {
+                // Add Book
+                await testAddBook();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Get Books
+                await testGetBooks();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Add Member
+                await testAddMember();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Get Members
+                await testGetMembers();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            alert('Complete test flow finished! Check all the response sections.');
+        }
+
+        function clearAllResponses() {
+            const responses = document.querySelectorAll('.response-section');
+            responses.forEach(response => {
+                response.style.display = 'none';
+            });
+            alert('All responses cleared!');
+        }
+
+        async function testMultiTenant() {
+            alert('Multi-tenant test will create two users and verify isolation. Check console for details.');
+            
+            // Create first user
+            const user1 = await makeRequest(`${baseUrl}/user/adduser`, 'POST', {
+                name: 'Librarian One',
+                email: 'lib1@test.com',
+                password: 'test123'
+            });
+            console.log('User 1 created:', user1);
+            
+            // Create second user
+            const user2 = await makeRequest(`${baseUrl}/user/adduser`, 'POST', {
+                name: 'Librarian Two',
+                email: 'lib2@test.com',
+                password: 'test123'
+            });
+            console.log('User 2 created:', user2);
+            
+            // Login as user 1
+            const login1 = await makeRequest(`${baseUrl}/auth/login`, 'POST', {
+                email: 'lib1@test.com',
+                password: 'test123'
+            });
+            const token1 = login1.data.accessToken;
+            
+            // Login as user 2
+            const login2 = await makeRequest(`${baseUrl}/auth/login`, 'POST', {
+                email: 'lib2@test.com',
+                password: 'test123'
+            });
+            const token2 = login2.data.accessToken;
+            
+            console.log('Both users logged in successfully');
+            
+            // Add book as user 1
+            const book1 = await makeRequest(`${baseUrl}/book/addBook`, 'POST', {
+                title: 'User 1 Book',
+                author: 'Author 1',
+                publishedYear: 2025,
+                available: true
+            }, false);
+            // Manually add auth header for user 1
+            const headers1 = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token1}` };
+            const book1Response = await fetch(`${baseUrl}/book/addBook`, {
+                method: 'POST',
+                headers: headers1,
+                body: JSON.stringify({
+                    title: 'User 1 Book',
+                    author: 'Author 1',
+                    publishedYear: 2025,
+                    available: true
+                })
+            });
+            
+            console.log('Book added by User 1');
+            
+            // Try to get books as user 2 (should be empty)
+            const headers2 = { 'Authorization': `Bearer ${token2}` };
+            const books2Response = await fetch(`${baseUrl}/book`, {
+                method: 'GET',
+                headers: headers2
+            });
+            const books2 = await books2Response.json();
+            
+            console.log('Books visible to User 2:', books2);
+            console.log('Multi-tenant test complete! User 2 should not see User 1\'s books.');
+            
+            if (Array.isArray(books2) && books2.length === 0) {
+                alert('✅ Multi-tenant isolation working correctly! User 2 cannot see User 1\'s books.');
+            } else {
+                alert('❌ Multi-tenant isolation may have issues. Check console for details.');
+            }
+        }
+
+        function updateBaseUrl() {
+            const newUrl = document.getElementById('baseUrlInput').value;
+            baseUrl = newUrl;
+            document.getElementById('baseUrl').textContent = newUrl;
+            alert(`Base URL updated to: ${newUrl}`);
+        }
+
+        // New functions for network IP detection
+        function detectNetworkIP() {
+            const currentHost = window.location.hostname;
+            document.getElementById('currentHost').textContent = currentHost || 'file://';
+            
+            const suggestions = document.getElementById('ipSuggestions');
+            
+            if (currentHost === '' || currentHost === 'localhost' || currentHost === '127.0.0.1') {
+                suggestions.innerHTML = `
+                    <div style="background: #d4edda; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                        <strong>✅ Network IP Detected!</strong><br>
+                        Your network IP: <code>192.168.16.104</code><br>
+                        Base URL configured: <code>${baseUrl}</code><br>
+                        <br>
+                        <strong>📱 Access from other devices:</strong><br>
+                        • Same WiFi network: <code>http://192.168.16.104:3000</code><br>
+                        • Make sure your server is running!
+                    </div>
+                `;
+            } else {
+                suggestions.innerHTML = `
+                    <div style="background: #d4edda; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                        <strong>✅ Network access detected!</strong><br>
+                        Current host: <code>${currentHost}</code><br>
+                        Your API should be accessible at: <code>http://${currentHost}:3000</code>
+                    </div>
+                `;
+            }
+        }
+
+        // Update the base URL display on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('BMS API Documentation loaded successfully!');
+            console.log('Base URL:', baseUrl);
+            
+            // Update the display
+            document.getElementById('baseUrl').textContent = baseUrl;
+            document.getElementById('baseUrlInput').value = baseUrl;
+            
+            detectNetworkIP(); // Auto-detect network setup
+        });
+    </script>
+</body>
+</html>
