@@ -1,34 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class MemberService {
-  constructor(private prisma:PrismaService){}
-  async create(data: CreateMemberDto, librarianId:number) {
+  constructor(private prisma: PrismaService) {}
 
-    try{
-        const member = await this.prisma.member.create({
-          data:{
-            name:data.name,
-            email:data.email,
-            librarianId:librarianId
-          }
-        });
-        return {
-          message:"member created successfully",
-          data:member
+  async create(data: CreateMemberDto, librarianId: number) {
+    try {
+      const existingMember = await this.prisma.member.findFirst({
+        where: {
+          email: data.email,
+          librarianId: librarianId
+        },
+        include:{
+          librarian: true
         }
-      }catch(e){
-        console.log(e)
-        return{
-          message:`failed to create member user with email ${data.email} already exists`,
-          error:e,
-          statusCode:500,
-          data:null
-        }
+      });
+
+
+
+      if (existingMember) {
+        throw new BadRequestException(`Member with email ${data.email} already exists`);
       }
+
+      const member = await this.prisma.member.create({
+        data: {
+          name: data.name,
+          email: data.email,
+          librarianId: librarianId
+        }
+      });
+
+      return {
+        success: true,
+        message: "Member created successfully",
+        statusCode: 201,
+        data: member
+      };
+
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      
+      console.log(error);
+      throw new InternalServerErrorException('Failed to create member');
+    }
   }
 
 
@@ -38,6 +57,7 @@ export class MemberService {
         librarianId:librarianId
       },
       select:{
+        id:true,
         name:true,
         email:true,
         librarianId:true
