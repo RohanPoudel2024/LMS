@@ -14,4 +14,8 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsBoolean()
   returned?: boolean;
+
+  // @IsInt()
+  // @IsOptional()
+  // remainingDays?: number;
 }

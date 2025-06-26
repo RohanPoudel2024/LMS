@@ -70,17 +70,21 @@ export class TransactionService {
         }
       }
 
-      const autoReturnDate = new Date();
-      autoReturnDate.setDate(autoReturnDate.getDate()+14);
+const autoReturnDate = new Date();
+autoReturnDate.setDate(autoReturnDate.getDate()+14);
 
+// const remainingDays = Math.max(
+//   0,
+//   Math.ceil((autoReturnDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+// );
 
-      const transaction = await this.prisma.transaction.create({
-        data:{
-          memberId:create.memberId,
-          bookId:create.bookId,
-          returnDate:autoReturnDate,
-          returned:create.returned,
-        },
+const transaction = await this.prisma.transaction.create({
+  data:{
+    memberId:create.memberId,
+    bookId:create.bookId,
+    returnDate:autoReturnDate,
+    returned:create.returned,
+  },
         include:{
           member:{
             select:{
@@ -130,6 +134,8 @@ export class TransactionService {
     });
     
   }
+
+
 
   findOne(id: number) {
     return `This action returns a #${id} transaction`;
