@@ -4,13 +4,13 @@ A comprehensive Book Management System built with NestJS, Prisma, and PostgreSQL
 
 ## Features
 
-- 🔐 **Authentication & Authorization** - JWT-based authentication system
-- 📚 **Book Management** - Add, view, and manage books
-- 👥 **Member Management** - Register and manage library members
-- 📋 **Transaction Management** - Track book issues and returns
-- 🛡️ **Role-based Access** - Librarian-specific access controls
-- ✅ **Data Validation** - Input validation using class-validator
-- 🗄️ **Database** - PostgreSQL with Prisma ORM
+- **Authentication & Authorization** - JWT-based authentication system
+- **Book Management** - Add, view, and manage books
+- **Member Management** - Register and manage library members
+- **Transaction Management** - Track book issues and returns
+- **Role-based Access** - Librarian-specific access controls
+- **Data Validation** - Input validation using class-validator
+- **Database** - PostgreSQL with Prisma ORM
 
 ## Tech Stack
 
@@ -106,7 +106,7 @@ Authorization: Bearer <your-jwt-token>
 
 ---
 
-## 🔐 Authentication Endpoints
+## Authentication Endpoints
 
 ### POST /auth/login
 Login with email and password to get JWT token.
@@ -292,7 +292,7 @@ curl -X GET http://localhost:3000/book \
 
 ---
 
-## 👤 Member Management Endpoints
+## Member Management Endpoints
 **(Authentication Required)**
 
 ### POST /member/addMember
@@ -477,7 +477,7 @@ Delete a transaction.
 
 ---
 
-## 🧪 Testing the API
+## Testing the API
 
 ### 1. Using cURL
 
@@ -580,7 +580,7 @@ const books = await booksResponse.json();
 
 ---
 
-## 🛠️ Development Scripts
+## Development Scripts
 ```bash
 # Development
 npm run start:dev          # Start in watch mode
@@ -606,7 +606,7 @@ npm run lint              # Run ESLint
 npm run format            # Format code with Prettier
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -640,7 +640,7 @@ prisma/
 └── migrations/           # Database migrations
 ```
 
-## 🔧 Error Handling
+## Error Handling
 
 The API uses consistent error response format:
 
@@ -662,7 +662,7 @@ Common HTTP status codes:
 - `404`: Not Found
 - `500`: Internal Server Error
 
-## 🔍 Validation Rules
+## Validation Rules
 
 ### User Registration
 - `name`: Required string
@@ -685,7 +685,7 @@ Common HTTP status codes:
 - `returnDate`: Optional date string
 - `returned`: Optional boolean
 
-## 🚀 Deployment
+## Deployment
 
 ### Using Docker
 
@@ -738,7 +738,7 @@ volumes:
 docker-compose up -d
 ```
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -751,7 +751,7 @@ docker-compose up -d
 
 This project is licensed under the UNLICENSED License.
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -781,7 +781,7 @@ Run in debug mode to get detailed error logs:
 npm run start:debug
 ```
 
-## 📞 Support
+## Support
 
 For support and questions:
 - Create an issue in the repository
