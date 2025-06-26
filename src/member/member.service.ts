@@ -23,7 +23,9 @@ export class MemberService {
       }catch(e){
         console.log(e)
         return{
-          message:`failed to create member ${e}`,
+          message:`failed to create member user with email ${data.email} already exists`,
+          error:e,
+          statusCode:500,
           data:null
         }
       }
