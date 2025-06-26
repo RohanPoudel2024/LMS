@@ -11,7 +11,6 @@ export class BookController {
     @Post('addBook')
     createBook(@Body() createBookDto:CreateBookDto, @Request() req){
         const librarianId = req.user.userId;
-
         return this.bookService.createBook(createBookDto,librarianId)
     }
 
