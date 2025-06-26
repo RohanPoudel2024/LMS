@@ -39,7 +39,7 @@ model User {
 model Member {
   id          Int      @id @unique @default(autoincrement())
   name        String
-  email       String   @unique
+  email       String   
   createdAt   DateTime @default(now())
   
   librarianId Int
