@@ -17,7 +17,7 @@ export class MemberController {
     return this.memberService.create(createMemberDto, librarianId);
   }
 
-  @Get('getAll')
+  @Get('get/All')
   findAll(@Req() req: AuthRequest) {
     const librarianId = req.user.userId;
     return this.memberService.findAll(librarianId);

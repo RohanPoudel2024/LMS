@@ -18,6 +18,7 @@ export class BookService {
                     // createdAt:data.createdAt
                 },
                 select:{
+                    id:true,
                     title:true,
                     available:true,
                     userId:true,

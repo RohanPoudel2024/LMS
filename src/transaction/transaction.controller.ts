@@ -10,13 +10,13 @@ import { AuthRequest } from 'src/auth/auth-request.interface';
 export class TransactionController {
   constructor(private transactionService: TransactionService) {}
 
-  @Post('addTrsaction')
+  @Post('addTransaction')
   create(@Body() createTransactionDto: CreateTransactionDto, @Req() req:AuthRequest) {
     const librarianId = req.user.userId;
     return this.transactionService.createTransaction(createTransactionDto,librarianId);
   }
 
-  @Get('get/all')
+  @Get('get/All')
   findAll(@Req() req:AuthRequest) {
     const librarianId = req.user.userId;
     return this.transactionService.findAll(librarianId);

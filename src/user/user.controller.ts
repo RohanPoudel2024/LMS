@@ -11,7 +11,7 @@ export class UserController {
         return this.userService.createUser(rules);
     }
     
-    @Get('get/all')
+    @Get('get/All')
     findAllUsers(){
         return this.userService.findAllUsers()
     }
