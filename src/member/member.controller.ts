@@ -33,7 +33,7 @@ export class MemberController {
     return this.memberService.update(+id, updateMemberDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string, @Req() req: AuthRequest) {
     const librarianId = req.user.userId;
     return this.memberService.remove(+id, librarianId);
