@@ -419,12 +419,12 @@ curl -X GET http://localhost:3000/member/1 \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-### DELETE /member/:id
+### DELETE /member/delete/:id
 Delete a member.
 
 **Test with cURL:**
 ```bash
-curl -X DELETE http://localhost:3000/member/1 \
+curl -X DELETE http://localhost:3000/member/delete/1 \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
