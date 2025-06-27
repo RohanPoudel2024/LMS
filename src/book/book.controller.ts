@@ -14,7 +14,7 @@ export class BookController {
         return this.bookService.createBook(createBookDto,librarianId)
     }
 
-    @Get() 
+    @Get('getAllBooks') 
     findAllBooks(@Request() req) {
         const librarianId = req.user.userId; 
         return this.bookService.findAllBooks(librarianId);
