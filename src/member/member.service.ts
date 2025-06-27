@@ -51,6 +51,9 @@ export class MemberService {
   }
 
 
+
+
+
   async findAll(librarianId:number) {
     return await this.prisma.member.findMany({
       where:{
@@ -74,18 +77,34 @@ export class MemberService {
   }
 
   async remove(id: number, librarianId:number) {
-    
-    const member = await this.prisma.member.findUnique({
-      where: {
-        id: id,
-        librarianId: librarianId
-      },
-      });
-    if (!member) {
-      throw new InternalServerErrorException(`Member with id ${id} not found or you do not have permission to delete this member`);
-    }
+
     
     try{
+      const member = await this.prisma.member.findUnique({
+        where: {
+          id: id,
+          librarianId: librarianId
+        },
+        });
+      if (!member) {
+        throw new InternalServerErrorException(`Member with id ${id} not found or you do not have permission to delete this member`);
+      }
+
+
+      const findTransaction = await this.prisma.transaction.findMany({
+        where:{
+          memberId: id,
+        }
+      })
+
+      if (findTransaction){
+        await this.prisma.transaction.deleteMany({
+          where: {
+            memberId:id
+          }
+        })
+      }
+
       await this.prisma.member.delete({
         where:{
           id:id,
