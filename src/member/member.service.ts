@@ -68,8 +68,17 @@ export class MemberService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} member`;
+  async findOne(id: number, librarianId:number) {
+    const member = await this.prisma.member.findUnique({
+      where: {
+        id: id,
+        librarianId: librarianId
+      },
+      });
+    if (!member) {
+      throw new InternalServerErrorException(`Member with id ${id} not found or you do not have permission to access this member`);
+    }
+    return member;
   }
 
   update(id: number, updateMemberDto: UpdateMemberDto) {

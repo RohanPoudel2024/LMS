@@ -23,9 +23,10 @@ export class MemberController {
     return this.memberService.findAll(librarianId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.memberService.findOne(+id);
+  @Get('findOne/:id')
+  findOne(@Param('id') id: string, @Req() req: AuthRequest) {
+    const librarianId = req.user.userId;
+    return this.memberService.findOne(+id, librarianId);
   }
 
   @Patch(':id')
